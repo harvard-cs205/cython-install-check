@@ -1,4 +1,5 @@
 import numpy as np
+import os.path
 
 def make_ext(modname, pyxfilename):
     from distutils.extension import Extension
@@ -12,5 +13,5 @@ def make_ext(modname, pyxfilename):
                                          '-ffast-math',
                                          '-mfma',
                                          '-I{}'.format(np.get_include()),
-                                         '-I.'],
+                                         '-I{}'.format(os.path.dirname(os.path.abspath(__file__)))],
                      extra_link_args=['-fopenmp'])
