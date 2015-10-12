@@ -8,4 +8,5 @@ def make_ext(modname, pyxfilename):
                                          '-std=gnu99',
                                          '-Ofast',
                                          '-march=native',
-                                         '-I{}'.format(np.get_include())])
+                                         '-I{}'.format(np.get_include())],
+                     extra_link_args=[])

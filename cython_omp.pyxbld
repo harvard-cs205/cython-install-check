@@ -1,4 +1,12 @@
 import numpy as np
+import platform
+import os.path
+
+extra_link_args = ['-fopenmp']
+# work around problems on OSX with bad linkers
+if platform.system() == 'Darwin':
+    if os.path.exists('/usr/local/lib/libiomp5.dylib'):
+        extra_link_args = ['-L/usr/local/lib', '-liomp5']
 
 def make_ext(modname, pyxfilename):
     from distutils.extension import Extension
@@ -10,4 +18,4 @@ def make_ext(modname, pyxfilename):
                                          '-march=native',
                                          '-fopenmp',
                                          '-I{}'.format(np.get_include())],
-                     extra_link_args=['-fopenmp'])
+                     extra_link_args=extra_link_args)

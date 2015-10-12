@@ -1,19 +1,34 @@
 #include <math.h>
-#include <immintrin.h>
-#include <fmaintrin.h>
+
+#ifdef __AVX__
+#  include <immintrin.h>
+#else
+#  include "avxintrin-emu.h"
+#endif
+
+
+#ifdef __FMA__
+#  include <fmaintrin.h>
+#else
+#  define _mm256_fmadd_ps(a, b, c) _mm256_add_ps(_mm256_mul_ps((a), (b)), (c))
+#  define _mm256_fmsub_ps(a, b, c) _mm256_sub_ps(_mm256_mul_ps((a), (b)), (c))
+#endif
 
 typedef __m256 vec8;
 typedef __m256i vec8int;
+
+
 #define vec8_init(v)               _mm256_set1_ps(v)
 #define vec8_init_8(v1, v2, v3, v4, v5, v6, v7, v8) _mm256_set_ps((v1), (v2), (v3), (v4), \
                                                                   (v5), (v6), (v7), (v8))
 #define vec8_muladd(a, b, c)        _mm256_fmadd_ps((a), (b), (c))  // a * b + c
 #define vec8_mulsub(a, b, c)        _mm256_fmsub_ps((a), (b), (c))  // a * b - c
 #define vec8_sqrt(val)              _mm256_sqrt_ps(val)
-#define vec8_mul(val)               _mm256_mul_ps(val)
-#define vec8_add(val)               _mm256_add_ps(val)
-#define vec8_div(val)               _mm256_div_ps(val)
-#define vec8_and(val)               _mm256_and_ps(val)
+#define vec8_mul(a, b)              _mm256_mul_ps((a), (b))
+#define vec8_add(a, b)              _mm256_add_ps((a), (b))
+#define vec8_sub(a, b)              _mm256_sub_ps((a), (b))
+#define vec8_div(a, b)              _mm256_div_ps((a), (b))
+#define vec8_and(a, b)              _mm256_and_ps((a), (b))
 
 // comparisons yield all ones (-1.0) or all zeros (0.0) for each comparison
 // (a < b) -> 0 or -1.0
